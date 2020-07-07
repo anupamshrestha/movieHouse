@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi= require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const Rental = mongoose.model('Rental', new mongoose.Schema({
     customer : {
@@ -21,6 +22,7 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
                 maxlength : 50
             }
         }),
+        ref:'Customer',
         required : true
     }, 
     movie : {
@@ -39,6 +41,7 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
                     max : 20
                 }
         }),
+        ref: 'Movie',
         required: true    
     },
     datOut : {
@@ -57,11 +60,16 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
 
 function validateRental(rental) {
     const schema = {
-        customerId : Joi.string().required(),
-        movieId : Joi.string()
+        customerId: Joi.objectId().required(),
+        movieId : Joi.objectId().required(),
+        customerName: Joi.string(),
+        movieTitle: Joi.string()
     };
+    // console.log("schema>>", schema)
     return Joi.validate(rental, schema);
 }
+
+
 
 module.exports = {
     Rental : Rental,
