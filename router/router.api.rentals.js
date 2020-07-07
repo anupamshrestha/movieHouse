@@ -57,7 +57,7 @@ router.post('/', async(req, res, next) => {
         rental = await rental.save();
         movie.numberInStock--;
         movie.save();
-        res.status(200).send('Rental created');
+        res.status(200).send('The movie is rented');
     } catch(ex) {
         res.status(500).send('Internal server failed.');
     }
