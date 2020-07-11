@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const Joi = require('joi');
 const {Genre, validate }= require('../models/genres.model');
-const mongoose = require('mongoose');
+const token = require('../Middleware/auth');
+const admin = require('../Middleware/admin')
+
 
 
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
     res.send(genres);
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/',token, async (req, res, next) => {
     try {
         const { error } = validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
@@ -42,7 +43,7 @@ router.put('/:id', async (req, res, next) => {
     
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',[token, admin], async (req, res) => {
     const genre = await Genre.findByIdAndRemove(req.params.id); 
     if(!genre) return res.status(404).send('The movie with given id is not found');
     res.status(200).send('Genre Deleted');  

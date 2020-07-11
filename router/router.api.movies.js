@@ -1,9 +1,8 @@
 const router = require('express').Router();
-const Joi = require('joi');
 const { Movie, validate } = require('../models/movies.model');
-const mongoose = require('mongoose');
 const { Genre } = require('../models/genres.model');
-const Fawn = require('fawn');
+const token = require('../Middleware/auth');
+
 
 router.get('/', async(req, res) => {
     const movies = await Movie
@@ -12,7 +11,7 @@ router.get('/', async(req, res) => {
         res.status(200).send(movies);  
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/',token, async (req, res, next) => {
 
     try{
     const genre = await Genre.findOne({name : req.body.genre });

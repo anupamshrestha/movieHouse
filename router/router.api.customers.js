@@ -1,8 +1,6 @@
 const router = require('express').Router();
-const Joi = require('joi');
-const mongoose = require('mongoose');
-
 const {Customer, validate} = require('../models/customers.model' );
+const token = require('../Middleware/auth');
 
 
 router.get('/',async (req, res) => {
@@ -17,7 +15,7 @@ router.get('/:id', async(req, res) => {
     res.status(200).send('The customer is given id');  
 
 });
-router.post('/', async (req, res, next) => {
+router.post('/', token, async (req, res, next) => {
     try {
         const { error } = validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);

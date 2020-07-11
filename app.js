@@ -1,4 +1,4 @@
-const path = require('path');
+const config = require('config');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
@@ -9,12 +9,17 @@ const indexRouter = require('./router/index');
 const bodyParser = require('body-parser');
 
 
-mongoose.connect ('mongodb://localhost:27017/MovieStore', {useNewUrlParser: true, useUnifiedTopology: true})
+
+require('dotenv').config({path:__dirname + `/env/${process.env.NODE_ENV}`+`.env`});
+mongoose.connect (process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(console.log("Connected to MongoDB..."))
     .catch(err => console.error('Failed to connect to MongoDB...', err));
 
-require('dotenv').config({path:__dirname + `/env/${process.env.NODE_ENV}`+`.env`});
 
+if (!config.get('jwtPrivateKey')) {
+    console.error('FATAL ERROR : jwtPrivateKey is not defined');
+    process.exit(1);
+}
 app.use(helmet());
 app.use(morgan('common'));
 app.use(cors());
